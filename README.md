@@ -1,115 +1,104 @@
-Binance Futures CLI Trading Bot
+# Binance Futures CLI Trading Bot
 
-A command-line trading application built in Python that interacts with the Binance Futures API.
+A command-line trading bot built in Python that interacts with the Binance Futures Testnet API.  
+This project demonstrates clean architecture, modular design, proper input validation, structured logging, and real-world API integration.
 
-This project was developed to demonstrate clean software architecture, structured logging, proper validation, and real-world API integration in a trading environment.
+---
 
-📖 About the Project
+## 📌 Project Overview
 
-This bot allows users to execute Futures trades directly from the terminal.
+This bot allows users to execute Futures trades directly from the terminal. It supports:
 
-It supports:
+- **Market Orders** – Buy or sell instantly at market price.
+- **Limit Orders** – Place orders at a specific price.
+- **Automatic Leverage Configuration** – Set leverage before placing an order.
+- **Input Validation** – Ensures correct parameters before sending requests.
+- **Structured Logging** – Logs all API interactions, requests, and errors.
+- **Error Handling** – Graceful handling of API errors and runtime exceptions.
 
-Market orders
+The project is designed to be **modular, scalable, and maintainable**, making it easy to extend with additional trading strategies or features.
 
-Limit orders
+---
 
-Automatic leverage configuration
+## 🏗 Project Structure
 
-Input validation before execution
-
-Detailed logging for debugging and tracking
-
-Graceful handling of API and runtime errors
-
-The system is designed with modularity and scalability in mind, making it easy to extend with additional trading features in the future.
-
-🏗 Project Structure
-project/
+```text
+trading_bot/
 │
 ├── bot/
-│   ├── client.py          # Handles Binance API connection
-│   ├── orders.py          # Contains trading logic
-│   ├── validators.py      # Validates user inputs
-│   ├── logging_config.py  # Configures logging system
-│────── logs
-|         ├── bot.log      #stores the log of orders and errors
-├── cli.py                 # Main program entry point
-├── requirements.txt
-└── README.md
-
+│   ├── __init__.py           # Python package initializer
+│   ├── client.py             # Binance API connection
+│   ├── orders.py             # Trading logic and order placement
+│   ├── validators.py         # Validates user input
+│   └── logging_config.py     # Sets up logging
+│
+├── logs/
+│   └── bot.log               # Logs all order activity and errors
+│
+├── cli.py                    # Command-line interface entry point
+├── requirements.txt          # Python dependencies
+└── README.md                 # This documentation
 🧩 Architecture Overview
 
-The application is divided into clear layers:
+The project is divided into layers:
 
-CLI Layer
-Responsible for parsing user inputs and displaying results.
+CLI Layer – Handles parsing user input and displaying results.
 
-Service Layer
-Handles core trading logic, including leverage setup and order placement.
+Service Layer – Contains trading logic, including leverage setup and order placement.
 
-Client Layer
-Manages the connection to Binance Futures.
+Client Layer – Manages the Binance API connection.
 
-Validation Layer
-Ensures that user inputs meet expected formats and constraints.
+Validation Layer – Ensures all user inputs are valid.
 
-Logging Layer
-Records order activity, responses, and errors for traceability.
+Logging Layer – Records order requests, responses, and errors for traceability.
 
 This separation ensures maintainability, readability, and easier testing.
 
 ⚙️ Setup Instructions
+1. Clone the Repository
+git clone https://github.com/<your-username>/trading_bot.git
+cd trading_bot
 
-Clone the repository
-git clone  
-cd project
-
-Create and activate a virtual environment
+2. Create and Activate Virtual Environment
 python -m venv venv
-
-Mac/Linux:
-
+# Activate venv:
+# Windows:
+venv\Scripts\activate
+# Mac/Linux:
 source venv/bin/activate
 
-Windows:
-
-venv\Scripts\activate
-
-Install required packages
+3. Install Dependencies
 pip install -r requirements.txt
 
-🔐 Configuration
+4. Configure API Credentials
 
-Create a .env file in the root directory:
+Create a .env file in the root directory with your Binance Testnet keys:
 
 BINANCE_API_KEY=your_api_key
 BINANCE_API_SECRET=your_api_secret
 
-For testing purposes, use Binance Futures Testnet API keys.
-
-▶ Running the Bot
-Market Order Example
+▶ Usage Examples
+Market Order
 python cli.py --symbol BTCUSDT --side BUY --type MARKET --quantity 0.002
 
-Limit Order Example
-python cli.py --symbol BTCUSDT --side BUY --type LIMIT --quantity 0.002 --price 50000
+Limit Order
+python cli.py --symbol BTCUSDT --side SELL --type LIMIT --quantity 0.002 --price 50000
 
-🔄 How It Works
+🔄 Execution Flow
 
-The CLI collects trading parameters.
+CLI parses the arguments provided by the user.
 
 Inputs are validated to prevent incorrect orders.
 
-Leverage is configured automatically for the selected symbol.
+Leverage is automatically configured for the selected symbol.
 
-The order is sent to Binance Futures.
+Order is sent to the Binance Futures API.
 
-The response is logged and displayed to the user.
+Response is displayed to the user and logged.
 
 📝 Logging
 
-The application logs:
+Logs include:
 
 Leverage configuration
 
@@ -117,26 +106,28 @@ Order request details
 
 API responses
 
-Errors and exceptions
+Errors and exceptions 
 
-Logs are:
+Error Management
 
-Printed to the terminal
+The bot handles:
 
-Saved in:
+Binance API exceptions (invalid API key, insufficient balance, etc.)
 
-logs/bot.log
+Invalid command-line inputs (wrong symbols, sides, or order types)
 
-🛡 Error Management
-
-The system handles:
-
-API-related exceptions
-
-Invalid command-line inputs
-
-Missing price for limit orders
+Missing price for LIMIT orders
 
 Unexpected runtime failures
 
-Errors are clearly reported and logged for debugging.
+Errors are logged and clearly displayed to the user for debugging.
+
+⚠️ Price Validation on Binance Futures
+
+SELL LIMIT orders must be above the current market price.
+
+BUY LIMIT orders must be below the current market price.
+
+Setting a price outside these limits will result in an API error (e.g., code -4024).
+
+MARKET orders execute immediately at the best available price and do not require manual price input
